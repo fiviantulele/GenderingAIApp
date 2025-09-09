@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gendering AI Conference - Nairobi 2025</title>
+    <!-- Add jsPDF and SheetJS libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #1a237e;
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 50%, #00bcd4 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(26, 35, 126, 0.2);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #00bcd4;
+        }
+
+        /* Logo Section */
+        .logo-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #1a237e, #3949ab, #00bcd4);
+            border-radius: 15px 15px 0 0;
+            margin: -20px -20px 0 -20px;
+        }
+
+        .logo-container {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .logo-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        .logo-svg {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .conference-title {
+            color: white;
+            margin-top: 15px;
+        }
+
+        .conference-title h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+        }
+
+        .conference-title .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+
+        .conference-title .tagline {
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .conference-title .hotel-info {
+            font-size: 1.0em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* Dashboard Styles - Updated Colors */
+        .dashboard-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+            margin: 30px auto;
+        }
+
+        .dashboard-actions .btn {
+            width: 100%;
+            text-align: center;
+            padding: 25px;
+            font-size: 18px;
+            border-radius: 15px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(45deg, #1a237e, #00bcd4);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hide the main navigation tabs */
+        .nav-tabs {
+            display: none;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #00bcd4;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            color: #1a237e;
+            background: white;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #1a237e;
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #1a237e, #00bcd4);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(26, 35, 126, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #3949ab, #00bcd4);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(26, 35, 126, 0.3);
+        }
+
+        .btn-success {
+            background: #4caf50;
+        }
+
+        .btn-danger {
+            background: #f44336;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: #1a237e;
+        }
+
+        .btn-continue {
+            background: linear-gradient(45deg, #1a237e, #00bcd4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(26, 35, 126, 0.3);
+        }
+
+        /* Registration Required Alert Styles */
+        .registration-alert {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            color: #856404;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+            animation: shake 0.6s ease-in-out;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .registration-alert h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .registration-alert.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 20%, 40%, 60%, 80% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-10px);
+            }
+        }
+
+        /* Download buttons styling */
+        .download-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-download-pdf {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-download-excel {
+            background: #38a169;
+            color: white;
+        }
+
+        .btn-download-pdf:hover, .btn-download-excel:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .agenda-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(26, 35, 126, 0.1);
+            border-left: 5px solid #00bcd4;
+            transition: all 0.3s ease;
+        }
+
+        .agenda-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 25px rgba(0, 188, 212, 0.15);
+        }
+
+        .agenda-time {
+            background: #1a237e;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .agenda-type {
+            background: #f0f8ff;
+            color: #1a237e;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            margin-left: 10px;
+            border: 1px solid #00bcd4;
+        }
+
+        .notification {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .notification.error {
+            background: #ffebee;
+            border: 1px solid #f44336;
+            color: #c62828;
+        }
+
+        .notification.show {
+            display: block;
+            animation: slideInNotif 0.3s ease;
+        }
+
+        @keyframes slideInNotif {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .day-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .day-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #00bcd4;
+            color: #1a237e;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .day-btn:hover, .day-btn.active {
+            background: #1a237e;
+            color: white;
+            border-color: #1a237e;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, #1a237e, #00bcd4);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .timetable {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #00bcd4;
+        }
+
+        .schedule-reminder {
+            background: #fff8e1;
+            border: 1px solid #ffc107;
+            color: #f57f17;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .countdown {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #00bcd4;
+        }
+
+        .navigation-buttons .btn {
+            flex: 0 0 auto;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Improved Schedule Table Styles */
+        .schedule-table {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        .schedule-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(26, 35, 126, 0.1);
+        }
+
+        .schedule-table th {
+            background-color: #1a237e;
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 2px solid #00bcd4;
+        }
+
+        .schedule-table td {
+            padding: 15px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+
+        .schedule-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .schedule-table tr:hover {
+            background-color: #f0f8ff;
+        }
+
+        .schedule-table .session-title {
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 5px;
+        }
+
+        .schedule-table .session-speaker {
+            font-style: italic;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .schedule-table .time-cell {
+            font-weight: 600;
+            color: #1a237e;
+            min-width: 120px;
+        }
+
+        .schedule-table .duration-cell {
+            font-weight: 500;
+            color: #00bcd4;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .schedule-table .venue-cell {
+            color: #3949ab;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .schedule-table .action-cell {
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .schedule-table .btn {
+            padding: 8px 12px;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .break-row {
+            background-color: #fff8e1 !important;
+            font-weight: bold;
+            text-align: center;
+            color: #f57f17;
+        }
+
+        /* Data persistence indicator */
+        .data-status {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .data-status.warning {
+            background: #fff8e1;
+            border: 1px solid #ffc107;
+            color: #f57f17;
+        }
+
+        .data-status.error {
+            background: #ffebee;
+            border: 1px solid #f44336;
+            color: #c62828;
+        }
+
+        .sync-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #4caf50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sync-indicator.show {
+            opacity: 1;
+        }
+
+        .sync-indicator.syncing {
+            background: #ff9800;
+        }
+
+        .sync-indicator.error {
+            background: #f44336;
+        }
+
+        .registration-status {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+                position: relative;
+            }
+            
+            .logo-header {
+                padding: 20px;
+                margin: -15px -15px 0 -15px;
+            }
+            
+            .logo-circle {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .logo-svg {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .conference-title h1 {
+                font-size: 2em;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .dashboard-actions {
+                max-width: 100%;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .navigation-buttons .btn {
+                width: 100%;
+            }
+
+            .schedule-table {
+                overflow-x: scroll;
+            }
+            
+            .schedule-table th, .schedule-table td {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+            
+            .schedule-table .btn {
+                padding: 6px 8px;
+                font-size: 12px;
+            }
+
+            .download-buttons {
+                flex-direction: column;
+            }
+
+            .download-buttons .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sync indicator -->
+    <div id="syncIndicator" class="sync-indicator">
+        <span id="syncText">Synced</span>
+    </div>
+
+    <div class="container" id="mainContainer">
+        <!-- Logo Header Section -->
+        <div class="logo-header">
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <!-- Your logo - place logo.png in the same folder as your HTML file -->
+                    <img src="logo.png" class="logo-svg" alt="Gendering AI Conference Logo" onerror="this.style.display='none'" />
+                </div>
+            </div>
+            <div class="conference-title">
+                <h1>GENDERING AI CONFERENCE</h1>
+                <p class="tagline">Decolonizing AI: Reclaiming power in the intelligence age from feminist perspective</p>
+                <p class="hotel-info">Mövenpick Hotel and Residence Nairobi, Kenya</p>
+                <p class="subtitle">August 20-22/ 2025</p>
+            </div>
+        </div>
+
+        <!-- Registration Status Display -->
+        <div id="registrationStatus" class="registration-status" style="display: none;">
+            ✅ You are registered! Welcome <span id="welcomeUserName"></span>
+        </div>
+
+        <!-- Registration Required Alert -->
+        <div id="registrationAlert" class="registration-alert">
+            <h3>⚠️ Registration Required!</h3>
+            <p>You must complete your registration before accessing other conference features.</p>
+            <p><strong>Please fill out the registration form below to continue.</strong></p>
+        </div>
+
+        <!-- Dashboard/Home Page -->
+        <div id="dashboard" class="page active">
+            <h2>🏠 Home</h2>
+            
+            <div class="welcome-banner">
+                <h3>Welcome to Gendering AI Conference 2025</h3>
+                <p>Navigate through the conference experience using the buttons below</p>
+            </div>
+            
+            <div class="dashboard-actions">
+                <button class="btn" onclick="showPage('registration')">📝 Registration</button>
+                <button class="btn" onclick="navigateWithValidation('agenda')">📅 Agenda</button>
+                <button class="btn" onclick="navigateWithValidation('schedule')">⏰ My Schedule</button>
+            </div>
+        </div>
+
+        <!-- Registration Page -->
+        <div id="registration" class="page">
+            <h2>🎯 Conference Registration</h2>
+            <div class="notification" id="regNotification"></div>
+            
+            <form name="conference-registration" id="conferenceRegistrationForm" onsubmit="handleFormSubmission(event)">
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="organization">Organization/Institution *</label>
+                    <input type="text" id="organization" name="organization" required placeholder="Your organization or institution">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                </div>
+                
+                <div class="form-group">
+                    <label for="bio">Professional Bio *</label>
+                    <textarea id="bio" name="bio" rows="5" required placeholder="Tell us about yourself and your work in AI/Gender studies..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn" id="submitBtn">
+                    <span id="submitText">🚀 Register for Conference</span>
+                    <span id="submitLoading" style="display: none;"><span class="loading"></span> Submitting...</span>
+                </button>
+            </form>
+
+            <div class="navigation-buttons">
+                <button type="button" class="btn btn-secondary" onclick="showPage('dashboard')">⬅️ Back</button>
+                <button class="btn btn-continue" onclick="navigateWithValidation('agenda')">Next ➡️</button>
+            </div>
+        </div>
+        
+        <!-- Agenda Page -->
+        <div id="agenda" class="page">
+            <h2>📅 Conference Agenda</h2>
+            
+            <div class="day-selector">
+                <button class="day-btn active" onclick="showDay('day1')">Day 1 - August 20</button>
+                <button class="day-btn" onclick="showDay('day2')">Day 2 - August 21</button>
+                <button class="day-btn" onclick="showDay('day3')">Day 3 - August 22</button>
+            </div>
+
+   <!-- Day 1 -->
+            <div id="day1" class="day-content">
+                <div class="theme-banner">
+                    <div class="theme-title">Day 1 Theme: Governance, Ethics & Justice</div>
+                    <div class="theme-description">Central questions of power, policy, decoloniality, and accountability in AI</div>
+                </div>
+                
+                <div class="timetable">
+                    <h3>📆 Day 1 - August 20, 2025 - Schedule</h3>
+                    <div class="schedule-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Session</th>
+                                    <th>Duration</th>
+                                    <th>Venue</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="time-cell">9:00 AM - 9:15 AM</td>
+                                    <td>
+                                        <div class="session-title">Welcoming and Opening Remarks</div>
+                                        <div class="session-speaker">Rebecca Ryakitimbo</div>
+                                    </td>
+                                    <td class="duration-cell">15 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('opening-day1', 'Welcoming and Opening Remarks', 'August 20, 2025 09:00', 15, 'Rebecca Ryakitimbo', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">9:15 AM - 9:35 AM</td>
+                                    <td>
+                                        <div class="session-title">Decolonizing AI: Bureaucratic Elites, Feminist Ethos, and Embodied Epistemologies</div>
+                                        <div class="session-speaker">Lilian Njeri Mbuthi</div>
+                                    </td>
+                                    <td class="duration-cell">20 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('keynote-day1', 'Decolonizing AI: Bureaucratic Elites, Feminist Ethos', 'August 20, 2025 09:15', 20, 'Lilian Njeri Mbuthi', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">9:40 AM - 10:40 AM</td>
+                                    <td>
+                                        <div class="session-title">Story of Self and Power Analysis - A Grounding Exercise</div>
+                                        <div class="session-speaker">Bridget Rhinohart</div>
+                                    </td>
+                                    <td class="duration-cell">55 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('grounding-day1', 'Story of Self and Power Analysis', 'August 20, 2025 09:35', 55, 'Bridget Rhinohart', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr class="break-row">
+                                    <td colspan="5">☕ Coffee Break (10:40 AM - 11:25 AM)</td>
+                                </tr>
+                               
+                                </tr>
+                                <tr>
+                                 <tr>
+                                    <td class="time-cell">11:30 PM - 12:30 PM</td>
+                                    
+                                    <td>
+                                        <div class="session-title">Panel: Decolonial Perspectives on AI-Driven Violence in War and Conflict Zones</div>
+                                        <div class="session-speaker">FIRN</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Main hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn btn-secondary" onclick="addToSchedule('panel-day1-2', 'Decolonial Perspectives on AI-Driven Violence', 'August 20, 2025 11:30', 60, 'FIRN', 'Room A')">Add to Schedule</button>
+                                    </td>
+                                </tr>   
+                                    <td class="time-cell"></td>
+                                    <td>
+                                        <div class="session-title">Workshop: AI, THE NEXT BEST THING (?) EU AI Governance and the Impact on Human Rights</div>
+                                        <div class="session-speaker">The People's AI AGENCY and CONNECTME</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Room A</td>
+                                    <td class="action-cell">
+                                        <button class="btn btn-secondary" onclick="addToSchedule('workshop-day1-2', 'EU AI Governance and Human Rights Impact', 'August 20, 2025 12:30', 60, 'People\'s AI AGENCY', 'Room A')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">12:30 PM - 13:30 PM</td>
+                                    <td>
+                                        <div class="session-title">Workshop: Gender and AI Ethics, Governance, and Policy in Africa</div>
+                                        <div class="session-speaker">Global Center on AI Governance</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('workshop-day1-1', 'Gender and AI Ethics, Governance, and Policy in Africa', 'August 20, 2025 12:30', 60, 'Global Center on AI Governance', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                <tr class="break-row">
+                                    <td colspan="5">🍽️ Lunch Break (13:30 PM - 14:10 PM)</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">14:10 PM - 14:30 PM</td>
+                                    <td>
+                                         <div class="session-title">Lighting Talk</div>
+                                        <div class="session-speaker">Irene Mwendwa </div>
+                                    </td>
+                                    <td class="duration-cell">20 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('workshop-day1-1', 'Gender and AI Ethics, Governance, and Policy in Africa', 'August 20, 2025 12:30', 60, 'Global Center on AI Governance', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                     
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">14:30 PM - 15:30 PM</td>
+                                    <td>
+                                        <div class="session-title">Workshop: AI as a Gender Difference Leveler: Are AI Models and Tools Accelerating Gender Equity or Reinforcing Gender Bias?</div>
+                                        <div class="session-speaker">National Coalition on Freedom of Expression and Content Moderation in Kenya</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('workshop-day1-3', 'AI as a Gender Difference Leveler', 'August 20, 2025 14:30', 60, 'National Coalition on Freedom of Expression', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell"></td>
+                                    <td>
+                                        <div class="session-title">Workshop: Co-Designing a Gender-Inclusive AI Toolkit for Economic Policymaking in Africa</div>
+                                        <div class="session-speaker">ACET, Rebecca, Jenniffer</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Room A</td>
+                                    <td class="action-cell">
+                                        <button class="btn btn-secondary" onclick="addToSchedule('workshop-day1-4', 'Co-Designing Gender-Inclusive AI Toolkit', 'August 20, 2025 14:30', 60, 'ACET, Rebecca, Jenniffer', 'Room A')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr class="break-row">
+                                    <td colspan="5">☕ Coffee Break (15:30 PM - 15:50 PM)</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">15:50 PM - 16:30 PM</td>
+                                    <td>
+                                        <div class="session-title">Showcase: African Women School of AI and Female Tech Exhibitors</div>
+                                        <div class="session-speaker">Various exhibitors</div>
+                                    </td>
+                                    <td class="duration-cell">40 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('showcase-day1', 'African Women School of AI Showcase', 'August 20, 2025 15:50', 40, 'Various exhibitors', 'Exhibition Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">16:30 PM - 16:45 PM</td>
+                                    <td>
+                                        <div class="session-title">Closing Remarks Day 1</div>
+                                        <div class="session-speaker">Conference Organizers</div>
+                                    </td>
+                                    <td class="duration-cell">15 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('closing-day1', 'Closing Remarks Day 1', 'August 20, 2025 16:30', 15, 'Conference Organizers', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 2 -->
+            <div id="day2" class="day-content" style="display: none;">
+                <div class="theme-banner">
+                    <div class="theme-title">Day 2 Theme: Feminist AI for Social Change & Technical Innovation</div>
+                    <div class="theme-description">Hands-on tools, methodologies, and applications for gender-equitable impact</div>
+                </div>
+                
+                <div class="timetable">
+                    <h3>📆 Day 2 - August 21, 2025 - Schedule</h3>
+                    <div class="schedule-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Session</th>
+                                    <th>Duration</th>
+                                    <th>Venue</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="time-cell">9:00 AM - 9:20 AM</td>
+                                    <td>
+                                        <div class="session-title">Keynote Address: Setting Context for Feminist AI</div>
+                                        <div class="session-speaker">Dr. Angela Ndaka</div>
+                                    </td>
+                                    <td class="duration-cell">20 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('keynote-day2-1', 'Keynote: Setting context for feminist AI', 'August 21, 2025 09:00', 20, 'Dr. Angela Ndaka', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">9:20 AM - 10:00 AM</td>
+                                    <td>
+                                        <div class="session-title">1:1 Conversations on AI and Arts Feminist Futures</div>
+                                        <div class="session-speaker">Lisa Russel/Arts Envoy</div>
+                                    </td>
+                                    <td class="duration-cell">40 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('conversation-day2', '1:1 Conversations on AI and Arts', 'August 21, 2025 09:20', 40, 'Lisa Russel', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">10:00 AM - 10:20 AM</td>
+                                    <td>
+                                        <div class="session-title">Keynote Address</div>
+                                        <div class="session-speaker">Angela Chukunzira</div>
+                                    </td>
+                                    <td class="duration-cell">20 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('keynote-day2-2', 'Keynote Address', 'August 21, 2025 10:00', 20, 'Angela Chukunzira', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr class="break-row">
+                                    <td colspan="5">☕ Tea Break (10:20 AM - 10:40 AM)</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">10:40 AM - 11:40 AM</td>
+                                    <td>
+                                        <div class="session-title">Panel: Gendered Realities in AI: Who Builds, Who Benefits, Who Is Left Behind?</div>
+                                        <div class="session-speaker">Kictanet</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('panel-day2-1', 'Gendered Realities in AI: Who Builds, Who Benefits', 'August 21, 2025 10:40', 60, 'Kictanet', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">11:40 AM - 12:40 PM</td>
+                                    <td>
+                                        <div class="session-title">Workshop: Creative Equity and Gendered Storytelling with ArtsEnvoy.ai: Empowering Global South Voices through Inclusive AI</div>
+                                        <div class="session-speaker">Lissa Russel</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('workshop-day2-1', 'Creative Equity and Gendered Storytelling', 'August 21, 2025 11:40', 60, 'Lissa Russel', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell"></td>
+                                    <td>
+                                        <div class="session-title">Panel: Our Bodies, Our Data, Our Futures: Pan African Feminist Pathways for Digital Justice</div>
+                                        <div class="session-speaker">The Nawi Afrifem Collective and African Feminism</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Room A</td>
+                                    <td class="action-cell">
+                                        <button class="btn btn-secondary" onclick="addToSchedule('panel-day2-2', 'Our Bodies, Our Data, Our Futures', 'August 21, 2025 11:40', 60, 'Nawi Afrifem Collective', 'Room A')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr class="break-row">
+                                    <td colspan="5">🍽️ Lunch Break (12:40 PM - 13:30 PM)</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">13:30 PM - 13:50 PM</td>
+                                    <td>
+                                        <div class="session-title">Keynote Address: Feminist Intelligence: Using AI to Expose Digital Violence and Reclaim Power</div>
+                                        <div class="session-speaker">Athandiwe Saba, Code for Africa</div>
+                                    </td>
+                                    <td class="duration-cell">20 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('keynote-day2-3', 'Feminist intelligence: AI against digital violence', 'August 21, 2025 13:30', 20, 'Athandiwe Saba', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">13:50 PM - 14:50 PM</td>
+                                    <td>
+                                        <div class="session-title">Safe and Ethical Artificial Intelligence to Address Gender Based Violence</div>
+                                        <div class="session-speaker">UNFPA</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('workshop-day2-2', 'Safe and ethical AI for GBV', 'August 21, 2025 13:50', 60, 'UNFPA', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">14:50 PM - 15:10 PM</td>
+                                    <td>
+                                        <div class="session-title">Light Talk: Decolonizing AI: Feminist Struggle for Justice, Inclusion and Accountability</div>
+                                        <div class="session-speaker">Various speakers</div>
+                                    </td>
+                                    <td class="duration-cell">20 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('lighttalk-day2', 'Decolonizing AI: Feminist Struggle', 'August 21, 2025 14:50', 20, 'Various speakers', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">15:10 PM - 16:20 PM</td>
+                                    <td>
+                                        <div class="session-title">Special Launch</div>
+                                        <div class="session-speaker">Conference Organizers</div>
+                                    </td>
+                                    <td class="duration-cell">70 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('launch-day2', 'Special Launch Event', 'August 21, 2025 15:10', 70, 'Conference Organizers', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">16:20 PM - 16:35 PM</td>
+                                    <td>
+                                        <div class="session-title">Coffee Break and Closing Remarks for the Day</div>
+                                        <div class="session-speaker">Conference Organizers</div>
+                                    </td>
+                                    <td class="duration-cell">15 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('closing-day2', 'Closing Remarks Day 2', 'August 21, 2025 16:20', 15, 'Conference Organizers', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 3 -->
+            <div id="day3" class="day-content" style="display: none;">
+                <div class="theme-banner">
+                    <div class="theme-title">Day 3 Theme: Community, Rural & Wellbeing Futures</div>
+                    <div class="theme-description">Focus on rural communities, mental health, and inclusive technological futures</div>
+                </div>
+                
+                <div class="timetable">
+                    <h3>📆 Day 3 - August 22, 2025 - Schedule</h3>
+                    <div class="schedule-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Session</th>
+                                    <th>Duration</th>
+                                    <th>Venue</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="time-cell">9:00 AM - 9:30 AM</td>
+                                    <td>
+                                        <div class="session-title">Counting What Matters: Feminist AI, Femicides, and Building Swahili Tools for Justice</div>
+                                        <div class="session-speaker">Femicide Count Kenya, Data + Feminism Lab (MIT, USA), and DISCO Lab (Brown University, USA)</div>
+                                    </td>
+                                    <td class="duration-cell">30 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('workshop-day3-1', 'Counting What Matters: Feminist AI for Justice', 'August 22, 2025 09:00', 30, 'Femicide Count Kenya et al.', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">09:30 AM-09:40 AM </td>
+                                    <td>
+                                        <div class="session-title">Keynote address: Digital Colonialism to Digital Liberation: African Women Rewriting AI Narratives </div>
+                                        <div class="session-speaker">Meriem Boudjadja </div>
+                                    </td>
+                                    <td class="duration-cell">10 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('workshop-day3-1', 'Counting What Matters: Feminist AI for Justice', 'August 22, 2025 09:00', 30, 'Femicide Count Kenya et al.', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">9:40 AM-10:00 AM</td>
+                                    <td>
+                                        <div class="session-title">Expert Talks</div>
+                                        <div class="session-speaker">Florence Ogonjo  </div>
+                                    </td>
+                                    <td class="duration-cell">20 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('expert-day3', 'Expert Talks', 'August 22, 2025 09:30', 60, 'Various speakers', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">10:00 AM-11:00 AM</td>
+                                    <td>
+                                        <div class="session-title">Gender talks: Gender Considerations in AI for Development </div>
+                                        <div class="session-speaker">Loise Ochanda and Dr.Melissa Omino   </div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('expert-day3', 'Expert Talks', 'August 22, 2025 09:30', 60, 'Various speakers', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr class="break-row">
+                                    <td colspan="5">☕ Coffee Break (11:00 AM - 11:20 AM)</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">11:20 AM - 12:20M</td>
+                                    <td>
+                                        <div class="session-title">Panel: Invisible Scars: Healing the Mental Trauma of AI/Tech Work and Heartheart Digital Rights and Mental Health Initiative</div>
+                                        <div class="session-speaker">African Content Moderators Union</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('panel-day3-1', 'Invisible Scars: Mental Trauma in Tech', 'August 22, 2025 10:50', 60, 'African Content Moderators Union', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell"></td>
+                                    <td>
+                                        <div class="session-title">Panel: Reclaiming AI from the Margins: Queer Healing, Hustle, and Power in Rural Africa</div>
+                                        <div class="session-speaker">Various speakers</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Room A</td>
+                                    <td class="action-cell">
+                                        <button class="btn btn-secondary" onclick="addToSchedule('panel-day3-2', 'Reclaiming AI from the Margins', 'August 22, 2025 10:50', 60, 'Various speakers', 'Room A')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">12:20 PM–13:20 PM </td>
+                                    <td>
+                                        <div class="session-title">Expert Session: AI and Cybersecurity: Protecting Women and Girls in the Digital Age</div>
+                                        <div class="session-speaker">Esther Mengi, Serensic Africa</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Room B</td>
+                                    <td class="action-cell">
+                                        <button class="btn btn-secondary" onclick="addToSchedule('expert-session-day3', 'AI and Cybersecurity for Women', 'August 22, 2025 10:45', 60, 'Esther Mengi', 'Room B')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr class="break-row">
+                                    <td colspan="5">🍽️ Lunch Break (13:20 PM–13:50 PM)</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">13:50 PM-14:10 PM</td>
+                                    <td>
+                                        <div class="session-title">Keynote Address</div>
+                                        <div class="session-speaker">Dr. Grace Githaiga</div>
+                                    </td>
+                                    <td class="duration-cell">20 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('keynote-day3', 'Keynote Address', 'August 22, 2025 13:30', 20, 'Dr Grace Githaiga', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">14:10 PM–15:10 PM</td>
+                                    <td>
+                                        <div class="session-title">Panel: Designing Gender Just Infrastructures in Digital Agri-Food Systems: What if Rural Women Designed the Next Agri-Tech App?</div>
+                                        <div class="session-speaker">The InnoCatalyst Circle</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('panel-day3-3', 'Gender Just Infrastructures in Agri-Tech', 'August 22, 2025 13:50', 60, 'The InnoCatalyst Circle', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell"></td>
+                                    <td>
+                                        <div class="session-title">Panel: Inheritance: Young Women in AI Building What We Needed as Girls</div>
+                                        <div class="session-speaker">Various speakers</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Room A</td>
+                                    <td class="action-cell">
+                                        <button class="btn btn-secondary" onclick="addToSchedule('panel-day3-4', 'Inheritance: Young Women in AI', 'August 22, 2025 13:50', 60, 'Various speakers', 'Room A')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr class="break-row">
+                                    <td colspan="5">☕ Coffee Break (15:10 PM–15:30 PM)</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">15:30 PM–16:30 PM</td>
+                                    <td>
+                                        <div class="session-title">Panel: AI Can't Feel Pain: Infertility, Reproductive Struggles, Toxic Work Spaces and the Feminist Data Gap</div>
+                                        <div class="session-speaker">Waiting Womb Trust - Editah Hadassah</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('panel-day3-5', 'AI Can\'t Feel Pain: Reproductive struggles', 'August 22, 2025 15:10', 60, 'Editah Hadassah', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell"></td>
+                                    <td>
+                                        <div class="session-title">Workshop: Healing, Hustle & Herstories: Feminist Tech for Rural Liberation</div>
+                                        <div class="session-speaker">Otoyi M. Calary</div>
+                                    </td>
+                                    <td class="duration-cell">60 min</td>
+                                    <td class="venue-cell">Room A</td>
+                                    <td class="action-cell">
+                                        <button class="btn btn-secondary" onclick="addToSchedule('workshop-day3-2', 'Healing, Hustle & Herstories', 'August 22, 2025 15:10', 60, 'Otoyi M. Calary', 'Room A')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">16:30 PM–16:50 PM</td>
+                                    <td>
+                                        <div class="session-title">Light Talks: Bridging the Gender Data Gap: Foundations for Responsible and Equitable AI</div>
+                                        <div class="session-speaker">Data2X</div>
+                                    </td>
+                                    <td class="duration-cell">20 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('lighttalk-day3', 'Bridging the Gender Data Gap', 'August 22, 2025 16:10', 20, 'Data2X', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="time-cell">16:50 PM–17:00 PM</td>
+                                    <td>
+                                        <div class="session-title">Closing Remarks Day 3</div>
+                                        <div class="session-speaker">Conference Organizers</div>
+                                    </td>
+                                    <td class="duration-cell">10 min</td>
+                                    <td class="venue-cell">Main Hall</td>
+                                    <td class="action-cell">
+                                        <button class="btn" onclick="addToSchedule('closing-day3', 'Closing Remarks Day 3', 'August 22, 2025 16:30', 20, 'Conference Organizers', 'Main Hall')">Add to Schedule</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-secondary" onclick="showPage('registration')">⬅️ Back</button>
+                <button class="btn btn-continue" onclick="showPage('schedule')">Next ➡️</button>
+            </div>
+        </div>
+
+        <!-- My Schedule Page -->
+        <div id="schedule" class="page">
+            <h2>⏰ My Personal Schedule</h2>
+            
+            <div class="schedule-reminder">
+                🔔 Reminder: Selected sessions will appear here for easy access and planning.
+            </div>
+            
+            <div class="countdown" id="nextEventCountdown">
+                🎯 Add sessions from the agenda to see countdown timers here!
+            </div>
+            
+            <div id="myScheduleList">
+                <p style="text-align: center; color: #666; margin: 40px 0;">
+                    📅 Your selected sessions will appear here.<br>
+                    Visit the Agenda page to add sessions to your personal schedule.
+                </p>
+            </div>
+            
+            <div id="scheduleActions" style="display: none; margin-top: 20px;">
+                <div class="download-buttons">
+                    <button class="btn btn-download-pdf" onclick="downloadSchedulePDF()">📄 Download PDF</button>
+                    <button class="btn btn-download-excel" onclick="downloadScheduleExcel()">📊 Download Excel</button>
+                    <button class="btn btn-secondary" onclick="clearSchedule()">🗑️ Clear All Sessions</button>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-secondary" onclick="showPage('agenda')">⬅️ Back</button>
+                <button class="btn btn-continue" onclick="showPage('dashboard')">Back to Home ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for persistent data
+        let mySchedule = [];
+        let currentUser = null;
+
+        // Initialize the application
+        function init() {
+            loadUserData();
+            updateUI();
+            updateCountdown();
+            setInterval(updateCountdown, 60000);
+        }
+
+        // Load user data from storage and check registration status
+        function loadUserData() {
+            try {
+                const storedSchedule = localStorage.getItem('conference-schedule');
+                mySchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
+                
+                const storedUser = localStorage.getItem('conference-current-user');
+                currentUser = storedUser ? JSON.parse(storedUser) : null;
+                
+                console.log('Loaded user data:', currentUser);
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                mySchedule = [];
+                currentUser = null;
+            }
+        }
+
+        // Save data to local storage
+        function saveLocalData() {
+            try {
+                localStorage.setItem('conference-schedule', JSON.stringify(mySchedule));
+                localStorage.setItem('conference-current-user', JSON.stringify(currentUser));
+                console.log('Data saved successfully');
+            } catch (error) {
+                console.error('Error saving data:', error);
+            }
+        }
+
+        // Update UI based on registration status
+        function updateUI() {
+            const registrationAlert = document.getElementById('registrationAlert');
+            const registrationStatus = document.getElementById('registrationStatus');
+            const welcomeUserName = document.getElementById('welcomeUserName');
+            
+            if (currentUser) {
+                // User is registered
+                registrationAlert.style.display = 'none';
+                registrationStatus.style.display = 'block';
+                if (welcomeUserName) {
+                    welcomeUserName.textContent = currentUser.name;
+                }
+            } else {
+                // User is not registered
+                registrationAlert.style.display = 'block';
+                registrationStatus.style.display = 'none';
+            }
+        }
+
+        // Enhanced form submission handler
+        async function handleFormSubmission(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const submitLoading = document.getElementById('submitLoading');
+            submitText.style.display = 'none';
+            submitLoading.style.display = 'inline-block';
+            submitBtn.disabled = true;
+
+            try {
+                // Create user object immediately for local storage
+                const userData = {
+                    name: formData.get('fullName'),
+                    email: formData.get('email'),
+                    organization: formData.get('organization'),
+                    bio: formData.get('bio'),
+                    registrationDate: new Date().toISOString(),
+                    participantId: 'CONF_' + Date.now()
+                };
+
+                // Save user data locally first (for immediate access)
+                currentUser = userData;
+                saveLocalData();
+
+                // Try to send to Google Sheets (optional - won't block registration if it fails)
+                try {
+                    const response = await fetch("https://script.google.com/macros/s/AKfycbwfgn3CdPtoedtq6jKS1uySP_TzYI3qvQxV_xyqYhj7t4s20Mj94yqLiQDrt9B5Jg9u/exec", {
+                        method: "POST",
+                        body: new URLSearchParams(formData).toString(),
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+                    });
+
+                    const result = await response.json();
+                    console.log('Google Sheets response:', result);
+                } catch (googleSheetsError) {
+                    console.warn('Google Sheets submission failed, but registration still successful locally:', googleSheetsError);
+                }
+
+                // Registration successful
+                showNotification('regNotification', '✅ Registration successful! You can now access all conference features.', 'success');
+                updateUI();
+                form.reset();
+
+                // Auto-navigate to agenda after successful registration
+                setTimeout(() => {
+                    showPage('agenda');
+                }, 2000);
+
+            } catch (error) {
+                console.error("Registration error:", error);
+                showNotification('regNotification', '⚠️ Registration failed. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                resetSubmitButton();
+            }
+        }
+
+        function resetSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const submitLoading = document.getElementById('submitLoading');
+            
+            submitText.style.display = 'inline-block';
+            submitLoading.style.display = 'none';
+            submitBtn.disabled = false;
+        }
+
+        // Page navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            if (pageId === 'schedule') {
+                renderMySchedule();
+            }
+        }
+
+        // Navigation with validation
+        function navigateWithValidation(pageId) {
+            if (!currentUser && pageId !== 'registration' && pageId !== 'dashboard') {
+                showRegistrationAlert();
+                return;
+            }
+            showPage(pageId);
+        }
+
+        // Show registration alert
+        function showRegistrationAlert() {
+            const alert = document.getElementById('registrationAlert');
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 5000);
+            
+            // Scroll to registration form
+            setTimeout(() => showPage('registration'), 1000);
+        }
+
+        // Show notification
+        function showNotification(elementId, message, type = 'success') {
+            const notification = document.getElementById(elementId);
+            notification.textContent = message;
+            notification.className = `notification show ${type}`;
+            setTimeout(() => notification.classList.remove('show'), 5000);
+        }
+
+        // Agenda functions
+        function showDay(dayId) {
+            document.querySelectorAll('.day-content').forEach(day => day.style.display = 'none');
+            document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(dayId).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        // Enhanced add to schedule function
+        function addToSchedule(sessionId, title, datetime, duration, speaker, venue) {
+            if (!currentUser) {
+                showRegistrationAlert();
+                return;
+            }
+
+            if (mySchedule.find(item => item.id === sessionId)) {
+                alert('This session is already in your schedule!');
+                return;
+            }
+            
+            const session = {
+                id: sessionId, 
+                title, 
+                datetime, 
+                duration, 
+                speaker,
+                venue: venue || 'TBD',
+                timestamp: new Date(datetime).getTime(),
+                dateAdded: new Date().toISOString()
+            };
+            
+            mySchedule.push(session);
+            saveLocalData();
+            renderMySchedule();
+            
+            alert(`✅ "${title}" has been added to your schedule!`);
+        }
+
+        // Enhanced schedule rendering
+        function renderMySchedule() {
+            const container = document.getElementById('myScheduleList');
+            const actionsContainer = document.getElementById('scheduleActions');
+            
+            if (!container) return;
+            
+            if (mySchedule.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #666; margin: 40px 0;">📅 Your selected sessions will appear here.<br>Visit the Agenda page to add sessions to your personal schedule.</p>`;
+                if (actionsContainer) actionsContainer.style.display = 'none';
+                return;
+            }
+            
+            if (actionsContainer) actionsContainer.style.display = 'block';
+            
+            // Sort by timestamp
+            mySchedule.sort((a, b) => a.timestamp - b.timestamp);
+            
+            container.innerHTML = mySchedule.map(session => `
+                <div class="agenda-item">
+                    <span class="agenda-time">${session.datetime}</span>
+                    <h4>${session.title}</h4>
+                    <p><strong>Speaker:</strong> ${session.speaker}</p>
+                    <p><strong>Duration:</strong> ${session.duration} minutes</p>
+                    <p><strong>Venue:</strong> ${session.venue}</p>
+                    <button class="btn btn-danger" onclick="removeFromSchedule('${session.id}')">🗑️ Remove</button>
+                </div>
+            `).join('');
+            
+            updateCountdown();
+        }
+
+        function removeFromSchedule(sessionId) {
+            mySchedule = mySchedule.filter(session => session.id !== sessionId);
+            saveLocalData();
+            renderMySchedule();
+            alert('🗑️ Session removed from your schedule.');
+        }
+
+        // Enhanced PDF download function
+        function downloadSchedulePDF() {
+            if (mySchedule.length === 0) {
+                alert('❌ No sessions in your schedule to download.');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.text('Gendering AI Conference 2025', 20, 20);
+            doc.setFontSize(16);
+            doc.text('Personal Schedule', 20, 30);
+            
+            // Add user info if available
+            if (currentUser) {
+                doc.setFontSize(12);
+                doc.text(`Participant: ${currentUser.name}`, 20, 40);
+                doc.text(`Organization: ${currentUser.organization}`, 20, 47);
+            }
+            
+            // Add schedule
+            doc.setFontSize(14);
+            doc.text('Selected Sessions:', 20, 60);
+            
+            let yPosition = 70;
+            doc.setFontSize(10);
+            
+            mySchedule.forEach((session, index) => {
+                if (yPosition > 270) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                
+                doc.text(`${index + 1}. ${session.title}`, 20, yPosition);
+                yPosition += 7;
+                doc.text(`   Time: ${session.datetime}`, 20, yPosition);
+                yPosition += 5;
+                doc.text(`   Speaker: ${session.speaker}`, 20, yPosition);
+                yPosition += 5;
+                doc.text(`   Venue: ${session.venue}`, 20, yPosition);
+                yPosition += 5;
+                doc.text(`   Duration: ${session.duration} minutes`, 20, yPosition);
+                yPosition += 10;
+            });
+            
+            // Add footer
+            doc.setFontSize(8);
+            doc.text('Generated on: ' + new Date().toLocaleString(), 20, doc.internal.pageSize.height - 10);
+            
+            doc.save('Gendering-AI-Conference-Schedule.pdf');
+            alert('📄 PDF schedule downloaded successfully!');
+        }
+
+        // Enhanced Excel download function
+        function downloadScheduleExcel() {
+            if (mySchedule.length === 0) {
+                alert('❌ No sessions in your schedule to download.');
+                return;
+            }
+
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            
+            // Prepare data for Excel
+            const scheduleData = mySchedule.map((session, index) => ({
+                'No.': index + 1,
+                'Session Title': session.title,
+                'Date & Time': session.datetime,
+                'Duration (min)': session.duration,
+                'Speaker': session.speaker,
+                'Venue': session.venue,
+                'Added to Schedule': new Date(session.dateAdded).toLocaleString()
+            }));
+            
+            // Create worksheet
+            const ws = XLSX.utils.json_to_sheet(scheduleData);
+            
+            // Set column widths
+            const colWidths = [
+                { wch: 5 },  // No.
+                { wch: 50 }, // Session Title
+                { wch: 20 }, // Date & Time
+                { wch: 12 }, // Duration
+                { wch: 30 }, // Speaker
+                { wch: 15 }, // Venue
+                { wch: 20 }  // Added to Schedule
+            ];
+            ws['!cols'] = colWidths;
+            
+            // Add worksheet to workbook
+            XLSX.utils.book_append_sheet(wb, ws, 'My Schedule');
+            
+            // Create participant info sheet if available
+            if (currentUser) {
+                const participantData = [{
+                    'Full Name': currentUser.name,
+                    'Email': currentUser.email,
+                    'Organization': currentUser.organization,
+                    'Registration Date': currentUser.registrationDate,
+                    'Bio': currentUser.bio
+                }];
+                
+                const participantWs = XLSX.utils.json_to_sheet(participantData);
+                participantWs['!cols'] = [
+                    { wch: 25 }, // Full Name
+                    { wch: 30 }, // Email
+                    { wch: 30 }, // Organization
+                    { wch: 15 }, // Registration Date
+                    { wch: 50 }  // Bio
+                ];
+                
+                XLSX.utils.book_append_sheet(wb, participantWs, 'Participant Info');
+            }
+            
+            // Generate and download file
+            XLSX.writeFile(wb, 'Gendering-AI-Conference-Schedule.xlsx');
+            alert('📊 Excel schedule downloaded successfully!');
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const nextEventContainer = document.getElementById('nextEventCountdown');
+            
+            if (!nextEventContainer) return;
+            
+            const upcomingEvents = mySchedule.filter(session => session.timestamp > now);
+            
+            if (upcomingEvents.length === 0) {
+                nextEventContainer.innerHTML = mySchedule.length > 0 ? 
+                    '🎉 All your scheduled sessions have passed!' : 
+                    '🎯 Add sessions from the agenda to see countdown timers here!';
+                return;
+            }
+            
+            const nextEvent = upcomingEvents[0];
+            const timeLeft = nextEvent.timestamp - now;
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            
+            nextEventContainer.innerHTML = `🎯 Next Event: <strong>${nextEvent.title}</strong><br>⏰ Time Remaining: ${days}d ${hours}h ${minutes}m`;
+        }
+
+        function clearSchedule() {
+            if (mySchedule.length === 0) {
+                alert('❌ No sessions in your schedule to clear.');
+                return;
+            }
+            
+            if (confirm('🗑️ Are you sure you want to clear all sessions from your schedule?')) {
+                mySchedule = [];
+                saveLocalData();
+                renderMySchedule();
+                alert('✅ All sessions have been cleared from your schedule.');
+            }
+        }
+
+        // Add function to clear registration (for testing)
+        function clearRegistration() {
+            if (confirm('Are you sure you want to clear your registration? This will reset the app.')) {
+                currentUser = null;
+                mySchedule = [];
+                localStorage.removeItem('conference-current-user');
+                localStorage.removeItem('conference-schedule');
+                updateUI();
+                showPage('dashboard');
+                alert('Registration cleared. You can now register again.');
+            }
+        }
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+        });
+
+        // Auto-save data when page is about to unload
+        window.addEventListener('beforeunload', function() {
+            saveLocalData();
+        });
+
+        // Add keyboard shortcut for clearing registration (for development/testing)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+                clearRegistration();
+            }
+        });
+    </script>
+</body>
+</html>
